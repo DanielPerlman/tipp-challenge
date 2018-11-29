@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const todo = require('./routes'); // Imports routes for the todos
+const routes = require('./routes'); // Imports routes for the todos
 
 const app = express();
 
@@ -15,9 +15,10 @@ mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+// Express routes setup
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use('/todos', todo);
+app.use('/todos', routes);
 
 const port = 8000;
 
