@@ -9,9 +9,9 @@ exports.todo_create = function (req, res) {
     );
 
     todo.save(function (err) {
-        if (err) {
-            return next(err);
-        }
+        if (err) return next(err);
+
+        event_controller.event_create('todoAdded', todo._id);
         res.send('Todo added successfully')
     })
 };
@@ -20,6 +20,8 @@ exports.todo_create = function (req, res) {
 exports.todo_remove = function (req, res) {
     Todo.findByIdAndUpdate(req.params.id, {$set: {removedAt: Date.now()}}, function (err, todo) {
         if (err) return next(err);
+
+        event_controller.event_create('todoRemoved', todo._id);
         res.send('Todo removed.');
     });
 };
@@ -28,7 +30,11 @@ exports.todo_remove = function (req, res) {
 exports.todo_update_status = function (req, res) {
     Todo.findOneAndUpdate(req.params.id, {$set: {done: req.body.done}}, function (err, todo) {
         if (err) return next(err);
+
         let markedText = req.body.done == 'true' ? 'marked' : 'unmarked';
+        event_controller.event_create('todo'
+                                        + (markedText.charAt(0).toUpperCase() + markedText.substr(1))
+                                        + 'AsDone', todo._id);
         res.send(`Todo ${markedText} as done.`);
     });
 };
