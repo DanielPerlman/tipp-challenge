@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const todo = require('./routes/todo.route'); // Imports routes for the todos
+const todo = require('./routes'); // Imports routes for the todos
 
 const app = express();
 
