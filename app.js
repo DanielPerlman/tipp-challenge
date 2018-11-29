@@ -1,9 +1,22 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// initialize our express app
+const todo = require('./routes/todo.route'); // Imports routes for the todos
+
 const app = express();
 
-const todo = require('./routes/todo.route'); // Imports routes for the todos
+// Set up mongoose connection
+let dev_db_url = 'mongodb://root:rotiman100@ds119734.mlab.com:19734/todos_api';
+let mongoDB = process.env.MONGODB_URI || dev_db_url;
+
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use('/todos', todo);
 
 const port = 8000;
